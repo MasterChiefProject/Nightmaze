@@ -3,16 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class TryAgainMenu : MonoBehaviour
 {
-
-
     public void YesButtonPressed()
     {
-        // TODO: go back to the game scene from the beginning
+        SceneManager.LoadScene(Globals.gameScene);
     }
 
     public void NoButtonPressed()
     {
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene(Globals.mainMenuScene);
     }
 
 }

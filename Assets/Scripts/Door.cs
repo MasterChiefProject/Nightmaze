@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DoorScript : MonoBehaviour
+public class Door : MonoBehaviour
 {
     Animator animator;
 
@@ -11,16 +11,16 @@ public class DoorScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player") {
-            animator.SetBool("isOpen", true);
+        if (other.gameObject.tag == Globals.playerTag) {
+            animator.SetBool(Globals.doorOpenParameter, true);
         }
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == Globals.playerTag)
         {
-            animator.SetBool("isOpen", false);
+            animator.SetBool(Globals.doorOpenParameter, false);
         }
     }
 

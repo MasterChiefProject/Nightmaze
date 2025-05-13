@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -15,7 +16,7 @@ public class MainMenu : MonoBehaviour
 
     public void PlayButtonPressed()
     {
-        // TODO: switch to the first game scene
+        SceneManager.LoadScene(Globals.gameScene);
     }
 
     public void ExitButtonPressed()

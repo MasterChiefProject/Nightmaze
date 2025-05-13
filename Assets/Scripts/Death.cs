@@ -8,6 +8,8 @@ public class Death : MonoBehaviour
     {
         if (other.gameObject.tag == Globals.playerTag)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene(Globals.deathScene);
         }
     }

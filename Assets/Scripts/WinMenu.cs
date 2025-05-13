@@ -5,6 +5,6 @@ public class WinMenu : MonoBehaviour
 {
     public void BackButtonPressed()
     {
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene(Globals.mainMenuScene);
     }
 }

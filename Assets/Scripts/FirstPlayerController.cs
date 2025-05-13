@@ -1,68 +1,72 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class FirstPersonController : MonoBehaviour
+public class FirstPlayerController : MonoBehaviour
 {
+    [Header("References")]
+    public Transform mainCamera;     // assigned camera
+    public Transform groundCheck;    // an empty child transform at player's feet
+    public LayerMask groundMask;     // what counts as ground
+
     [Header("Look Settings")]
-    public Transform main_camera;
-    public float sensitivity = 10f;
+    public float mouseSensitivity = 2f;
     public float maxLookAngle = 60f;
 
     [Header("Move Settings")]
-    public float speed = 3f;
+    public float walkSpeed = 3f;
     public float jumpForce = 5f;
 
-    [Header("Ground Check")]
-    public Transform groundCheck;               // assign an empty at your feet
-    public float groundDistance = 0.2f;
-    public LayerMask groundMask;
-
-    Rigidbody rb;
-    float xRotation = 0f;
-    bool isGrounded;
+    private Rigidbody rb;
+    private float xRotation;
+    private bool jumpRequest;
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         rb = GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        // ��� Mouse Look ���
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
+        // ——— Mouse Look ———
+        float mx = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float my = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        transform.Rotate(Vector3.up * mouseX);
-        xRotation -= mouseY;
+        xRotation -= my;
         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
-        main_camera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        // ��� Ground Check ���
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        mainCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(0f, mx, 0f);
 
-        // ��� Movement & Jump ���
-        Vector3 moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
-        Vector3 move = transform.TransformDirection(moveInput) * speed;
-
-        // preserve current y-velocity
-        move.y = rb.linearVelocity.y;
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            move.y = jumpForce;
-        }
-
-        rb.linearVelocity = move;
+        // ——— Jump Request ———
+        if (Input.GetButtonDown("Jump"))
+            jumpRequest = true;
     }
 
-    // visualize the ground check sphere in editor
-    void OnDrawGizmosSelected()
+    void FixedUpdate()
     {
-        if (groundCheck != null)
+        // ——— Ground Check ———
+        bool isGrounded = Physics.CheckSphere(
+            groundCheck.position,
+            0.2f,
+            groundMask
+        );
+
+        // ——— Movement ———
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        Vector3 move = transform.right * h + transform.forward * v;
+        Vector3 vel = rb.linearVelocity;
+        vel.x = move.x * walkSpeed;
+        vel.z = move.z * walkSpeed;
+        rb.linearVelocity = vel;
+
+        // ——— Jump ———
+        if (jumpRequest && isGrounded)
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
         }
+        jumpRequest = false;
     }
 }

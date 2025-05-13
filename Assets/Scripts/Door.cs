@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DoorScript : MonoBehaviour
+public class Door : MonoBehaviour
 {
     Animator animator;
 

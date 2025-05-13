@@ -2,5 +2,6 @@ using UnityEngine;
 
 public class Globals : MonoBehaviour
 {
-    public static bool quitMenuEnabled = false;
+    public const string playerTag = "Player";
+    public const string deathScene = "TryAgainScene";
 }

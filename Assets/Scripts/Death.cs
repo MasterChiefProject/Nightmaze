@@ -19,32 +19,37 @@ public class Death : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            // play a random death sound, then load scene
-            PlayRandomDeathSound();
+            //play a random death sound
+            float delay = PlayRandomDeathSound();
+
+            //load death scene
+            StartCoroutine(LoadSceneAfterDelay(delay));
         }
     }
 
-    private void PlayRandomDeathSound()
+    private float PlayRandomDeathSound()
     {
+        return 0f;
+
         if (deathClips == null || deathClips.Length == 0 || audioSource == null)
-        {
-            // fallback if not set up correctly
-            SceneManager.LoadScene(Globals.deathScene);
-            return;
-        }
+            return 0f;
 
         int idx = Random.Range(0, deathClips.Length);
         AudioClip clip = deathClips[idx];
         audioSource.clip = clip;
         audioSource.Play();
 
-        // start coroutine that waits for the clip to finish
-        StartCoroutine(LoadSceneAfterDelay(clip.length));
+        return clip.length;
     }
 
     private IEnumerator LoadSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        LoadDeahScene();
+    }
+
+    private void LoadDeahScene()
+    {
         SceneManager.LoadScene(Globals.deathScene);
     }
 }

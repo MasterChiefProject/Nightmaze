@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Play {{{ PRODUCT_NAME }}}, a Unity 6 escape-horror game, directly in your browser.">
+    <meta name="color-scheme" content="dark light">
+    <title>{{{ PRODUCT_NAME }}} | Unity 6 Escape Horror</title>
+    <script>
+      try {
+        if (localStorage.getItem('nightmaze-web-theme-v1') === 'light') {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch (_) {}
+    </script>
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script defer src="TemplateData/shell.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <span class="eyebrow">MASTERCHIEFPROJECT</span>
+        <h1>{{{ PRODUCT_NAME }}}</h1>
+        <p>Unity 6 escape horror</p>
+      </div>
+      <nav class="site-actions" aria-label="Page controls">
+        <button id="theme-toggle" class="shell-button" type="button" aria-pressed="false">Light mode</button>
+        <a class="shell-button shell-link" href="https://github.com/MasterChiefProject/Nightmaze" target="_blank" rel="noreferrer">Source</a>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="game-card" aria-labelledby="game-heading">
+        <div class="game-heading">
+          <div>
+            <span class="eyebrow">WEBGL BUILD</span>
+            <h2 id="game-heading">Escape the maze</h2>
+          </div>
+          <span class="build-meta">Unity {{{ UNITY_VERSION }}} · v{{{ PRODUCT_VERSION }}}</span>
+        </div>
+
+        <div id="unity-container" class="unity-desktop">
+          <canvas id="unity-canvas" width="{{{ WIDTH }}}" height="{{{ HEIGHT }}}" tabindex="-1" aria-label="{{{ PRODUCT_NAME }}} game canvas"></canvas>
+
+          <div id="unity-loading-bar" aria-live="polite">
+            <div id="unity-logo" aria-hidden="true">NIGHTMAZE</div>
+            <div id="unity-loading-text">Loading game…</div>
+            <div id="unity-progress-bar-empty" role="progressbar" aria-label="Loading {{{ PRODUCT_NAME }}}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div id="unity-progress-bar-full"></div>
+            </div>
+          </div>
+
+          <div id="unity-warning" aria-live="assertive"></div>
+
+          <div id="unity-footer">
+            <div id="unity-build-title">{{{ PRODUCT_NAME }}}</div>
+            <button id="unity-fullscreen-button" class="shell-button" type="button" disabled>Fullscreen</button>
+          </div>
+        </div>
+
+        <p class="control-hint">WASD / Arrow Keys to move · Mouse to look · Space to jump</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Playable Unity WebGL portfolio build</span>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/MasterChiefProject/Nightmaze" target="_blank" rel="noreferrer">View repository</a>
+    </footer>
+
+    <script>
+      const canvas = document.querySelector('#unity-canvas');
+      const loadingBar = document.querySelector('#unity-loading-bar');
+      const loadingText = document.querySelector('#unity-loading-text');
+      const progressElement = document.querySelector('#unity-progress-bar-empty');
+      const progressBarFull = document.querySelector('#unity-progress-bar-full');
+      const fullscreenButton = document.querySelector('#unity-fullscreen-button');
+      const warningBanner = document.querySelector('#unity-warning');
+
+      function unityShowBanner(message, type) {
+        const notice = document.createElement('div');
+        notice.className = `unity-notice ${type === 'error' ? 'error' : 'warning'}`;
+        notice.textContent = message;
+        warningBanner.appendChild(notice);
+        warningBanner.hidden = false;
+
+        if (type !== 'error') {
+          window.setTimeout(() => {
+            notice.remove();
+            warningBanner.hidden = warningBanner.children.length === 0;
+          }, 5000);
+        }
+      }
+
+      const buildUrl = 'Build';
+      const loaderUrl = buildUrl + '/{{{ LOADER_FILENAME }}}';
+      const config = {
+        arguments: [],
+        dataUrl: buildUrl + '/{{{ DATA_FILENAME }}}',
+        frameworkUrl: buildUrl + '/{{{ FRAMEWORK_FILENAME }}}',
+        codeUrl: buildUrl + '/{{{ CODE_FILENAME }}}',
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + '/{{{ MEMORY_FILENAME }}}',
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + '/{{{ SYMBOLS_FILENAME }}}',
+#endif
+        streamingAssetsUrl: 'StreamingAssets',
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        document.querySelector('#unity-container').classList.replace('unity-desktop', 'unity-mobile');
+        canvas.classList.add('unity-mobile');
+        config.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      }
+
+      loadingBar.hidden = false;
+
+      const loaderScript = document.createElement('script');
+      loaderScript.src = loaderUrl;
+      loaderScript.onload = () => {
+        createUnityInstance(canvas, config, progress => {
+          const percent = Math.round(progress * 100);
+          progressBarFull.style.width = `${percent}%`;
+          progressElement.setAttribute('aria-valuenow', String(percent));
+          loadingText.textContent = `Loading game… ${percent}%`;
+        }).then(unityInstance => {
+          loadingBar.hidden = true;
+          fullscreenButton.disabled = false;
+          fullscreenButton.addEventListener('click', () => unityInstance.SetFullscreen(1));
+        }).catch(error => {
+          loadingBar.hidden = true;
+          unityShowBanner(String(error), 'error');
+        });
+      };
+      loaderScript.onerror = () => {
+        loadingBar.hidden = true;
+        unityShowBanner('Nightmaze could not load the Unity WebGL loader.', 'error');
+      };
+      document.body.appendChild(loaderScript);
+    </script>
+  </body>
+</html>

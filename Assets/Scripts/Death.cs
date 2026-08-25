@@ -5,51 +5,54 @@ using UnityEngine.SceneManagement;
 public class Death : MonoBehaviour
 {
     [Header("Audio")]
-    [Tooltip("Assign your 3 scary death clips here")]
+    [Tooltip("Assign the scary death clips here.")]
     [SerializeField] private AudioClip[] deathClips;
 
-    [Tooltip("AudioSource on this GameObject (uncheck Play On Awake)")]
+    [Tooltip("AudioSource on this GameObject (Play On Awake should be disabled).")]
     [SerializeField] private AudioSource audioSource;
+
+    private bool triggered;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Globals.playerTag))
+        if (triggered || !other.CompareTag(Globals.playerTag))
         {
-            // show cursor
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
-            //play a random death sound
-            float delay = PlayRandomDeathSound();
-
-            //load death scene
-            StartCoroutine(LoadSceneAfterDelay(delay));
+            return;
         }
+
+        triggered = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        float delay = PlayRandomDeathSound();
+        StartCoroutine(LoadSceneAfterDelay(delay));
     }
 
     private float PlayRandomDeathSound()
     {
-        return 0f;
-
         if (deathClips == null || deathClips.Length == 0 || audioSource == null)
+        {
             return 0f;
+        }
 
-        int idx = Random.Range(0, deathClips.Length);
-        AudioClip clip = deathClips[idx];
+        AudioClip clip = deathClips[Random.Range(0, deathClips.Length)];
+        if (clip == null)
+        {
+            return 0f;
+        }
+
         audioSource.clip = clip;
         audioSource.Play();
-
         return clip.length;
     }
 
     private IEnumerator LoadSceneAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
-        LoadDeahScene();
-    }
+        if (delay > 0f)
+        {
+            yield return new WaitForSeconds(delay);
+        }
 
-    private void LoadDeahScene()
-    {
         SceneManager.LoadScene(Globals.deathScene);
     }
 }

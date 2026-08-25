@@ -1,27 +1,28 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Door : MonoBehaviour
 {
-    Animator animator;
+    private Animator animator;
 
-    void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == Globals.playerTag) {
+        if (other.CompareTag(Globals.playerTag))
+        {
             animator.SetBool(Globals.doorOpenParameter, true);
         }
     }
 
-    public void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == Globals.playerTag)
+        if (other.CompareTag(Globals.playerTag))
         {
             animator.SetBool(Globals.doorOpenParameter, false);
         }
     }
-
 }

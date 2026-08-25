@@ -1,0 +1,214 @@
+:root {
+  color-scheme: dark;
+  --page: #08090d;
+  --surface: #11131a;
+  --surface-2: #181b24;
+  --border: #2b2e39;
+  --text: #f4f4f5;
+  --muted: #a4a7b0;
+  --accent: #c62640;
+  --accent-hover: #dc3651;
+  --canvas: #231f20;
+  --shadow: 0 24px 70px rgb(0 0 0 / 35%);
+  --warning: #f2c14e;
+  --error: #e25b67;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: #eceef2;
+  --surface: #ffffff;
+  --surface-2: #f5f6f8;
+  --border: #ccd1d9;
+  --text: #17191e;
+  --muted: #636975;
+  --accent: #991b30;
+  --accent-hover: #b5223a;
+  --canvas: #312c2d;
+  --shadow: 0 20px 55px rgb(23 25 30 / 12%);
+  --warning: #9a6900;
+  --error: #b22d3c;
+}
+
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--page); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 50% -12rem, rgb(198 38 64 / 18%), transparent 34rem),
+    var(--page);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: background-color .18s ease, color .18s ease;
+}
+button, a { font: inherit; }
+a { color: inherit; }
+
+.site-header {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  min-height: 78px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.brand h1 { margin: .1rem 0; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: .02em; }
+.brand p { margin: 0; color: var(--muted); font-size: .88rem; }
+.eyebrow { color: var(--accent); font-size: .69rem; font-weight: 800; letter-spacing: .15em; }
+.site-actions { display: flex; gap: .55rem; align-items: center; }
+
+.shell-button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: .6rem;
+  padding: .5rem .8rem;
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, border-color .12s ease, background-color .12s ease;
+}
+.shell-button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--accent); }
+.shell-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.shell-button:disabled { opacity: .45; cursor: not-allowed; }
+
+.page-main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  flex: 1;
+  display: grid;
+  align-items: center;
+  padding: 1.5rem 0 2.25rem;
+}
+.game-card {
+  width: 100%;
+  padding: clamp(.75rem, 2vw, 1.25rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+.game-heading {
+  width: min(960px, 100%);
+  margin: 0 auto .9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+.game-heading h2 { margin: .15rem 0 0; font-size: 1.15rem; }
+.build-meta { color: var(--muted); font: 650 .75rem ui-monospace, SFMono-Regular, Consolas, monospace; }
+
+#unity-container {
+  position: relative;
+  width: min(960px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: .8rem;
+}
+#unity-canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  display: block;
+  background: var(--canvas);
+  outline: 0;
+}
+#unity-container.unity-mobile { width: 100%; }
+.unity-mobile #unity-canvas { width: 100%; height: auto; }
+
+#unity-loading-bar {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .65rem;
+  padding: 1rem;
+  background: rgb(8 9 13 / 82%);
+  backdrop-filter: blur(5px);
+  color: #fff;
+}
+:root[data-theme="light"] #unity-loading-bar { background: rgb(255 255 255 / 86%); color: #17191e; }
+#unity-loading-bar[hidden] { display: none; }
+#unity-logo { color: var(--accent); font-weight: 900; letter-spacing: .18em; font-size: 1.05rem; }
+#unity-loading-text { color: var(--muted); font-size: .8rem; }
+#unity-progress-bar-empty {
+  width: min(290px, 70vw);
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+#unity-progress-bar-full { width: 0; height: 100%; background: var(--accent); transition: width .12s linear; }
+
+#unity-warning {
+  position: absolute;
+  top: .75rem;
+  left: 50%;
+  width: min(90%, 720px);
+  transform: translateX(-50%);
+  display: grid;
+  gap: .4rem;
+  z-index: 4;
+}
+#unity-warning[hidden] { display: none; }
+.unity-notice { padding: .65rem .8rem; border-radius: .55rem; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); font-size: .82rem; }
+.unity-notice.warning { border-color: var(--warning); }
+.unity-notice.error { border-color: var(--error); }
+
+#unity-footer {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .45rem .55rem .45rem .8rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+#unity-build-title { font-weight: 800; letter-spacing: .03em; }
+
+.control-hint { width: min(960px, 100%); margin: .7rem auto 0; color: var(--muted); text-align: center; font-size: .8rem; }
+.site-footer {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .45rem;
+  padding: .7rem 1rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  font-size: .78rem;
+}
+.site-footer a { color: var(--text); font-weight: 700; }
+
+@media (max-width: 640px) {
+  .site-header { align-items: flex-start; flex-direction: column; padding: .85rem 0; }
+  .site-actions { width: 100%; }
+  .site-actions .shell-button { flex: 1; }
+  .page-main { width: min(100% - .8rem, 1180px); padding-top: .7rem; }
+  .game-card { padding: .45rem; border-radius: .7rem; }
+  .game-heading { padding: .25rem .25rem 0; }
+  .build-meta { display: none; }
+  #unity-container { border-radius: .55rem; }
+  #unity-footer { min-height: 44px; }
+  .control-hint { padding-inline: .5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

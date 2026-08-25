@@ -4,12 +4,11 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-
     public GameObject quitMenu;
     public Button playButton;
     public Button exitButton;
 
-    void Start()
+    private void Start()
     {
         quitMenu.SetActive(false);
     }
@@ -22,8 +21,7 @@ public class MainMenu : MonoBehaviour
     public void ExitButtonPressed()
     {
         quitMenu.SetActive(true);
-        playButton.enabled = false;
-        exitButton.enabled = false;
+        playButton.interactable = false;
+        exitButton.interactable = false;
     }
-
 }

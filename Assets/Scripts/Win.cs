@@ -3,13 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class Win : MonoBehaviour
 {
-    public void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == Globals.playerTag)
+        if (!other.CompareTag(Globals.playerTag))
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene(Globals.winScene);
+            return;
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene(Globals.winScene);
     }
 }

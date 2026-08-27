@@ -1,5 +1,9 @@
 # Nightmaze
 
+[![Repository checks](https://github.com/MasterChiefProject/Nightmaze/actions/workflows/ci.yml/badge.svg)](https://github.com/MasterChiefProject/Nightmaze/actions/workflows/ci.yml)
+[![Unity](https://img.shields.io/badge/Unity-6000.0.47f1-black?logo=unity)](https://unity.com/)
+[![WebGL](https://img.shields.io/badge/WebGL-browser%20build-5b7fff)](https://masterchiefproject.github.io/Nightmaze/)
+
 A first-person mini escape-horror game built with **Unity 6** and deployed as a playable **WebGL** build.
 
 **Play live:** https://masterchiefproject.github.io/Nightmaze/

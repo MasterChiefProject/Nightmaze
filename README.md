@@ -24,7 +24,6 @@ The game focuses on short-form exploration and escape gameplay. The player moves
 - Persistent dark/light browser theme
 - Fullscreen support
 - GitHub Pages deployment
-- Automated repository and WebGL packaging checks
 
 ## Controls
 
@@ -69,9 +68,6 @@ The gameplay layer is component-oriented:
 
 ```text
 Nightmaze/
-├── .github/
-│   └── workflows/
-│       └── webgl-shell.yml
 ├── Assets/
 │   ├── Editor/
 │   │   └── NightmazeWebGLBuild.cs
@@ -83,8 +79,6 @@ Nightmaze/
 ├── Packages/
 ├── ProjectSettings/
 ├── docs/                         # Deployable GitHub Pages build
-├── tests/
-│   └── repository.test.mjs
 ├── ASSET-NOTICE.md
 └── README.md
 ```
@@ -140,29 +134,6 @@ Local URL:
 ```text
 http://localhost:8000/
 ```
-
-## Validation
-
-The repository includes lightweight automated checks that do not require Unity activation on GitHub-hosted runners.
-
-The checks cover:
-
-- deployed WebGL loader/data/framework/WASM files
-- custom browser shell integration
-- dark-mode default and persisted theme state
-- Unity WebGL template macros
-- expected Unity editor version
-- production scene list
-- critical gameplay-source invariants
-
-Local repository verification:
-
-```bash
-node --check docs/TemplateData/shell.js
-node --test tests/repository.test.mjs
-```
-
-Scene behavior, physics, rendering, and audio are additionally validated through the Unity Editor or a built player.
 
 ## Deployment
 
